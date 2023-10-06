@@ -12,11 +12,19 @@ public class W_Spawner : MonoBehaviour
     [SerializeField] float fTimeToWait = 1f;
     [SerializeField] List<SSpawner_Wave> allWaves = new List<SSpawner_Wave>();
 
+    IA_Manager iaManager = null;
+
     private void Start()
     {
         if (!path)
         {
             Debug.LogError("missing path in spawner");
+            return;
+        }
+        iaManager = IA_Manager.Instance;
+        if (!iaManager)
+        {
+            Debug.LogError("missing ia manager in spawner");
             return;
         }
     }
@@ -67,6 +75,7 @@ public class W_Spawner : MonoBehaviour
             {
                 IA_Enemy _enemy = Instantiate(_currentData.enemyPrefab, path.transform.position, Quaternion.identity, transform);
                 _enemy.SetPath(path);
+                iaManager.AddIA(_enemy);
             }
 
             //Check if he can spawn enemy on the next spawning
@@ -96,6 +105,13 @@ public struct SSpawner_Wave
     public List<SSpawner_WaveData> waves;
     public float fSpawnRate;
     public float fWaitTimeAfterFinishSpawn;
+
+    public SSpawner_Wave(List<SSpawner_WaveData> _waves, float _spawnRate, float _waitTimeAfterFinishSpawn)
+    {
+        waves = _waves;
+        fSpawnRate = _spawnRate;
+        fWaitTimeAfterFinishSpawn = _waitTimeAfterFinishSpawn;
+    }
 }
 
 [Serializable]
@@ -103,4 +119,10 @@ public struct SSpawner_WaveData
 {
     public IA_Enemy enemyPrefab;
     public int iEnemyQuantity;
+
+    public SSpawner_WaveData(IA_Enemy _enemyPrefab, int _enemyQuantity)
+    {
+        enemyPrefab = _enemyPrefab;
+        iEnemyQuantity = _enemyQuantity;
+    }
 }

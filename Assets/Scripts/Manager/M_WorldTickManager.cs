@@ -9,7 +9,8 @@ public class M_WorldTickManager : M_Singleton<M_WorldTickManager>
 
     private void Start()
     {
-        if (!iaManager) Debug.LogError("IA_Manager not linked");
+        if (!iaManager) 
+            Debug.LogError("IA_Manager not linked");
     }
     private void Update()
     {

@@ -9,8 +9,9 @@ public abstract class IA_Base : MonoBehaviour
     [SerializeField] protected float fSpeedFactor = 1.0f;
 
     [SerializeField] protected SIA_Stats sStats = new SIA_Stats();
+    [SerializeField] protected SMoveSpline_Data sSplineData = new SMoveSpline_Data();
 
-    W_Path pathFinding = null;
+    protected W_Path pathFinding = null;
     
     public bool IsIADestroyed => bIsIADestroyed;
 

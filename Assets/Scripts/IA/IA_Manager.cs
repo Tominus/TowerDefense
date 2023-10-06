@@ -27,6 +27,7 @@ public class IA_Manager : M_Singleton<IA_Manager>
             if (_iaBase.IsIADestroyed)
             {
                 allIA.RemoveAt(i);
+                Destroy(_iaBase.gameObject);
                 --i;
                 --_iaCount;
             }
