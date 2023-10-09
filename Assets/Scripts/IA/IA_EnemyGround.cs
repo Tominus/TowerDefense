@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class IA_EnemyGround : IA_Enemy
 {
-    [SerializeField] Vector3 lastPostion = Vector3.zero;
+
 
     private void Start()
     {
-        lastPostion = transform.position;
+        AskForGoal();
     }
 
     public override void Tick(float _deltaTime)
@@ -17,22 +17,24 @@ public class IA_EnemyGround : IA_Enemy
     private void Move(float _deltaTime)
     {
         Vector3 _currentPosition = transform.position;
-        float _deltaPosition = Vector3.Distance(_currentPosition, lastPostion);
-        lastPostion = _currentPosition;
+        Vector3 _goalPosition = sSplineData.vGoalPosition;
 
-        if (_deltaPosition < 0.01f)
-        {
-            _deltaPosition = 0.01f;
-        }
-
-        pathFinding.GetPosition(ref sSplineData, _deltaPosition);
-
-        Vector3 _movePosition = Vector3.MoveTowards(_currentPosition, sSplineData.vFinalPosition, _deltaTime * sStats.fMoveSpeed * fSpeedFactor);
+        Vector3 _movePosition = Vector3.MoveTowards(_currentPosition, _goalPosition, _deltaTime * sStats.fMoveSpeed * fSpeedFactor);
         transform.position = _movePosition;
+
+        if (Vector3.Distance(_movePosition, _goalPosition) < sSplineData.fDistanceForNewGoal)
+        {
+            AskForGoal();
+        }
 
         if (sSplineData.fCurrentDistTravel >= 1.0f)
         {
             bIsIADestroyed = true;
         }
+    }
+
+    private void AskForGoal()
+    {
+        pathFinding.GetGoalPosition(ref sSplineData, transform.position);
     }
 }
