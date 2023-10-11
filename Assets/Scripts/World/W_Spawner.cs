@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class W_Spawner : MonoBehaviour
 {
     [SerializeField] W_Path path = null;
+    [SerializeField] float fPathSize = 1.0f;
     [SerializeField] bool bIsWaitingForNextWave = false;
     [SerializeField] int iWaveIndex = 0;
     [SerializeField] int iEnemyIndex = 0;
@@ -29,12 +31,7 @@ public class W_Spawner : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        TickWave(Time.deltaTime);
-    }
-
-    private void TickWave(float _deltaTime)
+    public void TickWave(float _deltaTime)
     {
         fCurrentWaitTime += _deltaTime;
         if (fCurrentWaitTime > fTimeToWait)
@@ -73,8 +70,12 @@ public class W_Spawner : MonoBehaviour
 
             if (iEnemyIndex < _currentData.iEnemyQuantity)
             {
-                IA_Enemy _enemy = Instantiate(_currentData.enemyPrefab, path.transform.position, Quaternion.identity, transform);
+                float _perpendicularOffset = Random.Range(-fPathSize, fPathSize);
+
+                IA_Enemy _enemy = Instantiate(_currentData.enemyPrefab, path.StartPosition + path.StartDirection * _perpendicularOffset, Quaternion.identity, transform);
+
                 _enemy.SetPath(path);
+                _enemy.SetPerpendicularOffset(_perpendicularOffset);
                 iaManager.AddIA(_enemy);
             }
 

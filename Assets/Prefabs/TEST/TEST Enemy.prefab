@@ -56,13 +56,12 @@ MonoBehaviour:
     fAttackSpeed: 1
     ePhysicResistance: 0
     eMagicResistance: 0
-  sSplineData:
-    vGoalPosition: {x: 0, y: 0, z: 0}
-    fNearestSplinePoint: 0
-    fSplineFwdOffset: 0.05
-    fCurrentDistTravel: 0
+  sMovementData:
+    iPathIndex: 0
+    iLastPathIndex: 0
     fPerpendicularOffset: 0
-    fDistanceForNewGoal: 0.01
+    fDistanceForNewGoal: 0.1
+    vGoalPosition: {x: 0, y: 0, z: 0}
 --- !u!212 &9038277785667086931
 SpriteRenderer:
   m_ObjectHideFlags: 0

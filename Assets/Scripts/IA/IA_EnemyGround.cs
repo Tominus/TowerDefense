@@ -6,7 +6,7 @@ public class IA_EnemyGround : IA_Enemy
 
     private void Start()
     {
-        AskForGoal();
+        AskForNextGoal();
     }
 
     public override void Tick(float _deltaTime)
@@ -16,25 +16,25 @@ public class IA_EnemyGround : IA_Enemy
 
     private void Move(float _deltaTime)
     {
-        Vector3 _currentPosition = transform.position;
-        Vector3 _goalPosition = sSplineData.vGoalPosition;
+        Vector3 _goalPosition = sMovementData.vGoalPosition;
 
-        Vector3 _movePosition = Vector3.MoveTowards(_currentPosition, _goalPosition, _deltaTime * sStats.fMoveSpeed * fSpeedFactor);
+        Vector3 _movePosition = Vector3.MoveTowards(transform.position, _goalPosition, _deltaTime * sStats.fMoveSpeed * fSpeedFactor);
         transform.position = _movePosition;
 
-        if (Vector3.Distance(_movePosition, _goalPosition) < sSplineData.fDistanceForNewGoal)
+        if (Vector3.Distance(_movePosition, _goalPosition) < sMovementData.fDistanceForNewGoal)
         {
-            AskForGoal();
-        }
+            AskForNextGoal();
 
-        if (sSplineData.fCurrentDistTravel >= 1.0f)
-        {
-            bIsIADestroyed = true;
+            if (sMovementData.iPathIndex == sMovementData.iLastPathIndex)
+            {
+                //Enemy reach the end
+                bIsIADestroyed = true;
+            }
         }
     }
 
-    private void AskForGoal()
+    private void AskForNextGoal()
     {
-        pathFinding.GetGoalPosition(ref sSplineData, transform.position);
+        pathFinding.GetNextGoalPosition(ref sMovementData);
     }
 }

@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   path: {fileID: 0}
+  fPathSize: 0.5
   bIsWaitingForNextWave: 0
   iWaveIndex: 0
   iEnemyIndex: 0
@@ -53,8 +54,6 @@ MonoBehaviour:
   allWaves:
   - waves:
     - enemyPrefab: {fileID: 1529596945472678104, guid: 27e1df98bebaa8547887bac51ec3428f, type: 3}
-      iEnemyQuantity: 1
-    - enemyPrefab: {fileID: 1529596945472678104, guid: 27e1df98bebaa8547887bac51ec3428f, type: 3}
       iEnemyQuantity: 5
-    fSpawnRate: 2.5
-    fWaitTimeAfterFinishSpawn: 5
+    fSpawnRate: 0.5
+    fWaitTimeAfterFinishSpawn: 0.5
