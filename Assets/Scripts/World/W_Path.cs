@@ -10,22 +10,42 @@ public class W_Path : MonoBehaviour
     [SerializeField] Vector3 vEndPosition = Vector3.zero;
     [SerializeField] Vector3 vStartDirection = Vector3.zero;
 
+    [SerializeField] bool bDeactivatePointsRender = false;
+
     public Vector3 StartPosition => vStartPosition;
     public Vector3 StartDirection => vStartDirection;
     public Vector3 EndPosition => vEndPosition;
 
     private void Start()
     {
+        InitPointsPosition();
+        InitPointsRender();
+    }
+
+    private void InitPointsPosition()
+    {
         int _count = allPoints.Count;
         if (_count < 2)
         {
-            Debug.Log("No point set in Path");
+            Debug.Log("Need more point in Path");
             return;
         }
+
         Transform _startPoint = allPoints[0];
         vStartPosition = _startPoint.position;
         vStartDirection = _startPoint.up;
         vEndPosition = allPoints[_count - 1].position;
+    }
+    private void InitPointsRender()
+    {
+        if (!bDeactivatePointsRender) return;
+
+        int _count = allPoints.Count;
+        for (int i = 0; i < _count; ++i)
+        {
+            W_PathPoint _pathPoint = allPoints[i].GetComponent<W_PathPoint>();
+            _pathPoint.DeactivateRender();
+        }
     }
 
     public void GetNextGoalPosition(ref SGoalMovement_Data _data)

@@ -20,3 +20,10 @@ public abstract class IA_Base : MonoBehaviour
 
     public abstract void Tick(float _deltaTime);
 }
+
+public enum SIA_State
+{
+    Stand,
+    Move,
+    Attack
+}
