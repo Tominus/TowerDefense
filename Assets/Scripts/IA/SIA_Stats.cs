@@ -12,6 +12,7 @@ public struct SIA_Stats
     public EAttack_Type eAttackType;
     public float fAttackDamage;
     public float fAttackSpeed;
+    public float fAttackCooldown;
 
     public EDamage_Resistance ePhysicResistance;
     public EDamage_Resistance eMagicResistance;

@@ -9,12 +9,7 @@ public class IA_EnemyGround : IA_Enemy
         AskForNextGoal();
     }
 
-    public override void Tick(float _deltaTime)
-    {
-        Move(_deltaTime);
-    }
-
-    private void Move(float _deltaTime)
+    protected override void Move(float _deltaTime)
     {
         Vector3 _goalPosition = sMovementData.vGoalPosition;
 
@@ -23,18 +18,9 @@ public class IA_EnemyGround : IA_Enemy
 
         if (Vector3.Distance(_movePosition, _goalPosition) < sMovementData.fDistanceForNewGoal)
         {
+            ++sMovementData.iPathIndex;
+
             AskForNextGoal();
-
-            if (sMovementData.iPathIndex == sMovementData.iLastPathIndex)
-            {
-                //Enemy reach the end
-                bIsIADestroyed = true;
-            }
         }
-    }
-
-    private void AskForNextGoal()
-    {
-        pathFinding.GetNextGoalPosition(ref sMovementData);
     }
 }

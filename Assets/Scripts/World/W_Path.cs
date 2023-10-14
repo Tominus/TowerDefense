@@ -48,18 +48,19 @@ public class W_Path : MonoBehaviour
         }
     }
 
-    public void GetNextGoalPosition(ref SGoalMovement_Data _data)
+    public bool GetNextGoalPosition(ref SGoalMovement_Data _data)
     {
-        _data.iLastPathIndex = _data.iPathIndex;
-        if (_data.iPathIndex + 1 >= allPoints.Count)
+        if (_data.iPathIndex >= allPoints.Count)
         {
             //They are at the latest position
-            return;
+            return false;
         }
 
-        Transform _currentPoint = allPoints[++_data.iPathIndex];
+        Transform _currentPoint = allPoints[_data.iPathIndex];
 
         _data.vGoalPosition = _data.fPerpendicularOffset * _currentPoint.up + _currentPoint.position;
+
+        return true;
     }
 }
 

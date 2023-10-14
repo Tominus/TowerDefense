@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 5248047154214981608}
   - component: {fileID: 1529596945472678104}
   - component: {fileID: 9038277785667086931}
-  m_Layer: 0
+  - component: {fileID: 4842337434067277884}
+  m_Layer: 6
   m_Name: TEST Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,8 +53,9 @@ MonoBehaviour:
     fCurrentLife: 100
     fMoveSpeed: 1
     eAttackType: 0
-    fAttackDamage: 1
+    fAttackDamage: 10
     fAttackSpeed: 1
+    fAttackCooldown: 0
     ePhysicResistance: 0
     eMagicResistance: 0
   sMovementData:
@@ -62,6 +64,9 @@ MonoBehaviour:
     fPerpendicularOffset: 0
     fDistanceForNewGoal: 0.1
     vGoalPosition: {x: 0, y: 0, z: 0}
+  eState: 1
+  eType: 0
+  fightingAlly: {fileID: 0}
 --- !u!212 &9038277785667086931
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -114,3 +119,38 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!58 &4842337434067277884
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6337319181530943200}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.1
