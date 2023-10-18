@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public abstract class IA_Enemy : IA_Base
@@ -58,6 +60,7 @@ public abstract class IA_Enemy : IA_Base
         fightingAlly.OnDestroyIA -= FinishFight;
         fightingAlly = null;
 
-        AskForNextGoal();
+        if (!bIsIADestroyed)
+            Invoke(nameof(AskForNextGoal), 0.1f);
     }
 }

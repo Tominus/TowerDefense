@@ -5,6 +5,8 @@ public class IA_Ally_Guard : IA_Ally
 {
     [SerializeField] List<IA_Enemy> allEnemyInRange = new List<IA_Enemy>();
     [SerializeField] IA_Enemy fightingEnemy = null;
+    [SerializeField] float fCheckCurrentTime = 0f;
+    [SerializeField] float fCheckMaxTime = 0.1f;
 
     protected override void Start()
     {
@@ -43,10 +45,22 @@ public class IA_Ally_Guard : IA_Ally
         }
     }
 
+    protected void StartChecking()
+    {
+        OnTickIA += CheckForEnemy;
+    }
     //TODO if range
     //TODO Check if Ground or Air 
     protected void CheckForEnemy(float _deltaTime)
     {
+        fCheckCurrentTime += _deltaTime;
+        if (fCheckCurrentTime < fCheckMaxTime)
+        {
+            return;
+        }
+
+        fCheckCurrentTime = 0f;
+
         Vector3 _position = transform.position;
         IA_Enemy _nearestEnemy = null;
         float _minDistance = float.MaxValue;
@@ -118,6 +132,8 @@ public class IA_Ally_Guard : IA_Ally
         eState = EIA_State.Stand;
 
         OnTickIA = null;
-        OnTickIA += CheckForEnemy;
+
+        if (!bIsIADestroyed)
+            Invoke(nameof(StartChecking), 0.1f);
     }
 }
