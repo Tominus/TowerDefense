@@ -8,13 +8,15 @@ public class IA_Ally_Guard : IA_Ally
     [SerializeField] float fCheckCurrentTime = 0f;
     [SerializeField] float fCheckMaxTime = 0.1f;
 
+    [SerializeField] Vector3 vRallyPointPosition = Vector3.zero;
+
     protected override void Start()
     {
         base.Start();
+
         OnTickIA += CheckForEnemy;
         eState = EIA_State.Stand;
     }
-
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, sEnemyDetectionData.fCheckRange);
@@ -135,5 +137,33 @@ public class IA_Ally_Guard : IA_Ally
 
         if (!bIsIADestroyed)
             Invoke(nameof(StartChecking), 0.1f);
+    }
+
+    public void ForceMoveToCheckPoint(Vector3 _position)
+    {
+        vRallyPointPosition = _position;
+
+        if (eState == EIA_State.Move || eState == EIA_State.Attack)
+        {
+            fightingEnemy.FinishFight(this);
+            fightingEnemy.OnDestroyIA -= FinishFight;
+            fightingEnemy = null;
+        }
+
+        OnTickIA = null;
+        OnTickIA += MoveToCheckPoint;
+        eState = EIA_State.MoveToRallyPoint;
+    }
+    protected void MoveToCheckPoint(float _deltaTime)
+    {
+        Vector3 _position = Vector3.MoveTowards(transform.position, vRallyPointPosition, _deltaTime * sStats.fMoveSpeed * fSpeedFactor);
+        transform.position = _position;
+
+        if (Vector3.Distance(_position, vRallyPointPosition) < 0.1f)
+        {
+            OnTickIA = null;
+            OnTickIA += CheckForEnemy;
+            eState = EIA_State.Stand;
+        }
     }
 }

@@ -46,6 +46,7 @@ public enum EIA_State
 {
     Stand,
     Move,
+    MoveToRallyPoint,
     Attack
 }
 

@@ -57,3 +57,4 @@ MonoBehaviour:
       iEnemyQuantity: 5
     fSpawnRate: 0.5
     fWaitTimeAfterFinishSpawn: 0.5
+  bIsAutoSpawner: 0

@@ -13,6 +13,7 @@ public class W_Spawner : MonoBehaviour
     [SerializeField] float fCurrentWaitTime = 0f;
     [SerializeField] float fTimeToWait = 1f;
     [SerializeField] List<SSpawner_Wave> allWaves = new List<SSpawner_Wave>();
+    [SerializeField] bool bIsAutoSpawner = true;
 
     IA_Manager iaManager = null;
 
@@ -32,6 +33,14 @@ public class W_Spawner : MonoBehaviour
     }
 
     public void TickWave(float _deltaTime)
+    {
+        if (bIsAutoSpawner)
+            CalculateWaveTime(_deltaTime);
+        else
+            SpawnManuallyEnemy();
+    }
+
+    private void CalculateWaveTime(float _deltaTime)
     {
         fCurrentWaitTime += _deltaTime;
         if (fCurrentWaitTime > fTimeToWait)
@@ -97,6 +106,19 @@ public class W_Spawner : MonoBehaviour
             fTimeToWait = _currentWave.fWaitTimeAfterFinishSpawn;
             iEnemyIndex = 0;
         }
+    }
+
+    private void SpawnManuallyEnemy()
+    {
+        if (!Input.GetButtonDown("Submit")) return;
+
+        float _perpendicularOffset = Random.Range(-fPathSize, fPathSize);
+
+        IA_Enemy _enemy = Instantiate(allWaves[0].waves[0].enemyPrefab, path.StartPosition + path.StartDirection * _perpendicularOffset, Quaternion.identity, transform);
+
+        _enemy.SetPath(path);
+        _enemy.SetPerpendicularOffset(_perpendicularOffset);
+        iaManager.AddIA(_enemy);
     }
 }
 

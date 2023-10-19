@@ -60,6 +60,8 @@ public abstract class IA_Enemy : IA_Base
         fightingAlly.OnDestroyIA -= FinishFight;
         fightingAlly = null;
 
+        OnTickIA = null;
+
         if (!bIsIADestroyed)
             Invoke(nameof(AskForNextGoal), 0.1f);
     }
