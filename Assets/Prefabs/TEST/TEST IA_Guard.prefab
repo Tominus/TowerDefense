@@ -65,7 +65,7 @@ MonoBehaviour:
     fPerpendicularOffset: 0
     fDistanceForNewGoal: 0
     vGoalPosition: {x: 0, y: 0, z: 0}
-  eState: 1
+  eState: 0
   eType: 0
   sEnemyDetectionData:
     fCheckInterval: 0.25
