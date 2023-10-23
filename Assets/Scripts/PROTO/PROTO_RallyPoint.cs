@@ -7,6 +7,7 @@ public class PROTO_RallyPoint : MonoBehaviour
     [SerializeField] IA_Ally_Guard[] allGuards = null;
     [SerializeField] int iMaxGuards = 3;
     [SerializeField] float fRallyRadius = 0.5f;
+    [SerializeField] float fRallyPointEnemyRange = 1.5f;
 
     private void Start()
     {
@@ -23,6 +24,11 @@ public class PROTO_RallyPoint : MonoBehaviour
             ForceAllGuardsToRallyPoint();
             bEventChangePosition = false;
         }
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, fRallyPointEnemyRange);
     }
 
     // Force all guards to go around the rally point
@@ -47,8 +53,9 @@ public class PROTO_RallyPoint : MonoBehaviour
         float _radToAdd = Mathf.Deg2Rad * (360f / iMaxGuards) * _guardArrayPosition;
 
         Vector3 _guardPosition = new Vector3(Mathf.Cos(_radToAdd) * fRallyRadius, Mathf.Sin(_radToAdd) * fRallyRadius);
-
-        allGuards[_guardArrayPosition].ForceMoveToCheckPoint(_guardPosition + transform.position);
+        IA_Ally_Guard _guard = allGuards[_guardArrayPosition];
+        _guard.ForceMoveToCheckPoint(_guardPosition + transform.position);
+        _guard.SetRallyPointEnemyRange(fRallyPointEnemyRange, transform.position);
     }
 
     // Add guard spawned by the Caserne
