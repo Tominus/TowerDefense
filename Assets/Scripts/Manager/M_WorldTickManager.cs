@@ -4,6 +4,7 @@ using UnityEngine;
 public class M_WorldTickManager : M_Singleton<M_WorldTickManager>
 {
     [SerializeField] private IA_Manager iaManager = null;
+    [SerializeField] private P_ProjectileManager projectileManager = null;
     [SerializeField] private List<W_Spawner> allSpawners = new List<W_Spawner>();
 
     [SerializeField] private bool bIsGamePaused = false;
@@ -11,8 +12,8 @@ public class M_WorldTickManager : M_Singleton<M_WorldTickManager>
 
     private void Start()
     {
-        if (!iaManager) 
-            Debug.LogError("IA_Manager not linked");
+        if (!iaManager) Debug.LogError("IA_Manager not linked");
+        if (!projectileManager) Debug.LogError("P_ProjectileManager not linked");
     }
     private void Update()
     {
@@ -27,5 +28,7 @@ public class M_WorldTickManager : M_Singleton<M_WorldTickManager>
         {
             allSpawners[i].TickWave(_deltaTime);
         }
+
+        projectileManager.Tick(_deltaTime);
     }
 }

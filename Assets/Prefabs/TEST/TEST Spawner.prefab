@@ -53,7 +53,7 @@ MonoBehaviour:
   fTimeToWait: 1
   allWaves:
   - waves:
-    - enemyPrefab: {fileID: 1529596945472678104, guid: 27e1df98bebaa8547887bac51ec3428f, type: 3}
+    - enemyPrefab: {fileID: 1621575454078301100, guid: 90f6e66f5a92d094ebd897c5f07369eb, type: 3}
       iEnemyQuantity: 5
     fSpawnRate: 0.5
     fWaitTimeAfterFinishSpawn: 0.5

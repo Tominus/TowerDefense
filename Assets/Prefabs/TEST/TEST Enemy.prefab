@@ -64,7 +64,7 @@ MonoBehaviour:
     fPerpendicularOffset: 0
     fDistanceForNewGoal: 0.1
     vGoalPosition: {x: 0, y: 0, z: 0}
-  eState: 1
+  eState: 0
   eType: 0
   fightingAlly: {fileID: 0}
 --- !u!212 &9038277785667086931

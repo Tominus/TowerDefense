@@ -12,13 +12,15 @@ public abstract class IA_Base : MonoBehaviour
     [SerializeField] protected SIA_Stats sStats = new SIA_Stats();
     [SerializeField] protected SGoalMovement_Data sMovementData = new SGoalMovement_Data();
     [SerializeField] protected EIA_State eState = EIA_State.Move;
-    [SerializeField] protected EIA_Type eType = EIA_Type.Ground;
+    [SerializeField] protected EIA_Type eIAType = EIA_Type.Ground;
+    [SerializeField] protected EIA_AttackStyle eIAAttackStyle = EIA_AttackStyle.Ground;
 
     protected W_Path pathFinding = null;
     
     public bool IsIADestroyed => bIsIADestroyed;
     public EIA_State State => eState;
-    public EIA_Type Type => eType;
+    public EIA_Type IAType => eIAType;
+    public EIA_AttackStyle IAAttackStyle => eIAAttackStyle;
 
     public void SetPath(W_Path _path) => pathFinding = _path;
     public void SetPerpendicularOffset(float _perpendicularOffset) => sMovementData.fPerpendicularOffset = _perpendicularOffset;
@@ -47,11 +49,18 @@ public enum EIA_State
     Stand,
     Move,
     MoveToRallyPoint,
-    Attack
+    Attack,
 }
 
 public enum EIA_Type
 {
     Ground,
-    Air
+    Air,
+}
+
+public enum EIA_AttackStyle
+{
+    Ground,
+    Air,
+    Distance,
 }

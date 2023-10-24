@@ -29,7 +29,11 @@ public class IA_Ally_Guard : IA_Ally
         IA_Enemy _enemy = _other.GetComponent<IA_Enemy>();
         if (_enemy)
         {
-            //TODO check if enemy is Air or Ground
+            if (_enemy.IAType == EIA_Type.Air && eIAAttackStyle == EIA_AttackStyle.Ground)
+            {
+                return;
+            }
+
             allEnemyInRange.Add(_enemy);
         }
     }
@@ -55,8 +59,6 @@ public class IA_Ally_Guard : IA_Ally
         OnTickIA += CheckForEnemy;
         OnTickIA += MoveToCheckPoint;
     }
-    //TODO if range
-    //TODO Check if Ground or Air 
     protected void CheckForEnemy(float _deltaTime)
     {
         fCheckCurrentTime += _deltaTime;
@@ -97,13 +99,54 @@ public class IA_Ally_Guard : IA_Ally
         if (_nearestEnemy)
         {
             OnTickIA = null;
-            OnTickIA += MoveTowardEnemy;
 
-            eState = EIA_State.Move;
+            //Move to enemy position and attack
+            if (eIAAttackStyle == EIA_AttackStyle.Ground)
+            {
+                OnTickIA += MoveTowardEnemy;
 
-            fightingEnemy = _nearestEnemy;
-            fightingEnemy.WaitForFight(this);
-            fightingEnemy.OnDestroyIA += FinishFight;
+                eState = EIA_State.Move;
+
+                fightingEnemy = _nearestEnemy;
+                fightingEnemy.WaitForFight(this);
+                fightingEnemy.OnDestroyIA += FinishFight;
+            }
+
+            //Move toward enemy until he can attack
+            else if (eIAAttackStyle == EIA_AttackStyle.Distance)
+            {
+                if (sStats.fAttackDistanceMaxRange < _minDistance)
+                {
+                    //Move toward enemy until max attack range
+                }
+                else if (sStats.fAttackDistanceMinRange < _minDistance)
+                {
+                    //if enemy is Ground => Start classic fight else start distance Attack
+                    if (fightingEnemy.IAType == EIA_Type.Ground)
+                    {
+                        OnTickIA += MoveTowardEnemy;
+
+                        eState = EIA_State.Move;
+
+                        fightingEnemy = _nearestEnemy;
+                        fightingEnemy.WaitForFight(this);
+                        fightingEnemy.OnDestroyIA += FinishFight;
+                    }
+                    else // EnemyType == Air
+                    {
+                        //start Distance Attack
+                    }
+                }
+                else
+                {
+                    //start Distance Attack
+                }
+            }
+        }
+
+        if (OnTickIA == null)
+        {
+            Debug.Log("IA_Ally_Guard::CheckForEnemy -> IA is doing nothing");
         }
     }
 
@@ -147,6 +190,18 @@ public class IA_Ally_Guard : IA_Ally
 
         if (!bIsIADestroyed)
             Invoke(nameof(StartChecking), 0.1f);
+    }
+
+    protected void UpdateAttackDistance(float _deltaTime)
+    {
+        sStats.fAttackCooldown += _deltaTime * fSpeedFactor;
+
+        if (sStats.fAttackCooldown >= sStats.fAttackSpeed)
+        {
+            sStats.fAttackCooldown = 0f;
+            P_BaseProjectile _baseProjectile = Instantiate(sStats.baseProjectilePrefab, transform.position, Quaternion.identity);
+            //_baseProjectile.SetProjectileData(fightingEnemy, );
+        }
     }
 
     public void ForceMoveToCheckPoint(Vector3 _position)
