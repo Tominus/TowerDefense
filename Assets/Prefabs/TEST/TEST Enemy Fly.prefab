@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5356634929576026578}
   - component: {fileID: 5021404782751451369}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sprite Socket
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,8 @@ GameObject:
   - component: {fileID: 6318390176203654459}
   - component: {fileID: 1621575454078301100}
   - component: {fileID: 1775771906390628113}
-  m_Layer: 0
+  - component: {fileID: 2435999980744021934}
+  m_Layer: 6
   m_Name: TEST Enemy Fly
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,6 +141,10 @@ MonoBehaviour:
     fAttackDamage: 10
     fAttackSpeed: 1
     fAttackCooldown: 0
+    fAttackDistanceMaxRange: 0
+    fAttackDistanceMinRange: 0
+    baseProjectilePrefab: {fileID: 0}
+    fProjectileSpeed: 0
     ePhysicResistance: 0
     eMagicResistance: 0
   sMovementData:
@@ -150,7 +155,7 @@ MonoBehaviour:
     vGoalPosition: {x: 0, y: 0, z: 0}
   eState: 0
   eIAType: 1
-  eIAAttackType: 2
+  eIAAttackStyle: 0
   fightingAlly: {fileID: 0}
   sFlyingMoveData:
     fFlyingHeight: 0.5
@@ -207,3 +212,38 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!58 &2435999980744021934
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7371429599323623757}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.1

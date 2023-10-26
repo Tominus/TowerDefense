@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(CircleCollider2D))]
 public abstract class IA_Base : MonoBehaviour
 {
     public Action<IA_Base> OnDestroyIA = null;
@@ -50,6 +51,7 @@ public enum EIA_State
     Move,
     MoveToRallyPoint,
     Attack,
+    AttackDistance,
 }
 
 public enum EIA_Type

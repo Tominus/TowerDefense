@@ -16,6 +16,7 @@ public class P_ProjectileManager : M_Singleton<P_ProjectileManager>
             if (_projectile.IsDestroyed)
             {
                 allProjectile.Remove(_projectile);
+                Destroy(_projectile.gameObject);
                 --_count;
                 --i;
             }

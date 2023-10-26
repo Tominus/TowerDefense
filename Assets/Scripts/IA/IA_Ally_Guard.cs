@@ -5,11 +5,16 @@ public class IA_Ally_Guard : IA_Ally
 {
     [SerializeField] List<IA_Enemy> allEnemyInRange = new List<IA_Enemy>();
     [SerializeField] IA_Enemy fightingEnemy = null;
+    [SerializeField] bool bDrawDebug = false;
+    [SerializeField] bool bDrawDistanceDebug = true;
     [SerializeField] float fCheckCurrentTime = 0f;
     [SerializeField] float fCheckMaxTime = 0.1f;
     float fRallyPointEnemyRange = 1.5f;
+
+    //Position of the rallypoint
     Vector3 fRallyPointEnemyPosition = Vector3.zero;
 
+    //Position of the rally point offsetted for the guard
     [SerializeField] Vector3 vRallyPosition = Vector3.zero;
 
     protected override void Start()
@@ -21,8 +26,21 @@ public class IA_Ally_Guard : IA_Ally
     }
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, sEnemyDetectionData.fCheckRange);
+        if (bDrawDebug)
+        {
+            Vector3 _position = transform.position;
+
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(_position, sEnemyDetectionData.fCheckRange);
+
+            if (bDrawDistanceDebug)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(_position, sStats.fAttackDistanceMaxRange);
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawWireSphere(_position, sStats.fAttackDistanceMinRange);
+            }
+        }
     }
     private void OnTriggerEnter2D(Collider2D _other)
     {
@@ -112,35 +130,44 @@ public class IA_Ally_Guard : IA_Ally
                 fightingEnemy.OnDestroyIA += FinishFight;
             }
 
-            //Move toward enemy until he can attack
             else if (eIAAttackStyle == EIA_AttackStyle.Distance)
             {
+                fightingEnemy = _nearestEnemy;
+
                 if (sStats.fAttackDistanceMaxRange < _minDistance)
                 {
-                    //Move toward enemy until max attack range
+                    //Move toward enemy until he can attack
+                    OnTickIA += MoveTowardEnemyWithRange;
+                    eState = EIA_State.Move;
+
+                    fightingEnemy.OnDestroyIA += StopMoveTowardEnemyWithRange;
                 }
                 else if (sStats.fAttackDistanceMinRange < _minDistance)
                 {
-                    //if enemy is Ground => Start classic fight else start distance Attack
+                    //Enemy too close
+
                     if (fightingEnemy.IAType == EIA_Type.Ground)
                     {
                         OnTickIA += MoveTowardEnemy;
 
                         eState = EIA_State.Move;
 
-                        fightingEnemy = _nearestEnemy;
                         fightingEnemy.WaitForFight(this);
                         fightingEnemy.OnDestroyIA += FinishFight;
                     }
                     else // EnemyType == Air
                     {
-                        //start Distance Attack
+                        StartAttackDistance();
                     }
                 }
                 else
                 {
-                    //start Distance Attack
+                    StartAttackDistance();
                 }
+            }
+            else
+            {
+                Debug.Log("Attack Air style not implemented yet");
             }
         }
 
@@ -159,6 +186,25 @@ public class IA_Ally_Guard : IA_Ally
         if (Vector3.Distance(_position, _enemyPosition) < 0.1f)
         {
             StartFight();
+        }
+    }
+    protected void MoveTowardEnemyWithRange(float _deltaTime)
+    {
+        Vector3 _enemyPosition = fightingEnemy.transform.position;
+        Vector3 _position = Vector3.MoveTowards(transform.position, _enemyPosition, _deltaTime * sStats.fMoveSpeed * fSpeedFactor);
+        transform.position = _position;
+
+        if (Vector3.Distance(fRallyPointEnemyPosition, _enemyPosition) > fRallyPointEnemyRange)
+        {
+            //Enemy too far from rally point
+            fightingEnemy.OnDestroyIA -= StopMoveTowardEnemyWithRange;
+            FinishAttackDistance(fightingEnemy);
+            return;
+        }
+        if (Vector3.Distance(_position, _enemyPosition) < sStats.fAttackDistanceMaxRange)
+        {
+            fightingEnemy.OnDestroyIA -= StopMoveTowardEnemyWithRange;
+            StartAttackDistance();
         }
     }
 
@@ -186,12 +232,21 @@ public class IA_Ally_Guard : IA_Ally
 
         eState = EIA_State.Stand;
 
+        sStats.fAttackCooldown = 0f;
+
         OnTickIA = null;
 
         if (!bIsIADestroyed)
             Invoke(nameof(StartChecking), 0.1f);
     }
 
+    protected void StartAttackDistance()
+    {
+        OnTickIA = null;
+        OnTickIA += UpdateAttackDistance;
+        eState = EIA_State.AttackDistance;
+        fightingEnemy.OnDestroyIA += FinishAttackDistance;
+    }
     protected void UpdateAttackDistance(float _deltaTime)
     {
         sStats.fAttackCooldown += _deltaTime * fSpeedFactor;
@@ -199,9 +254,50 @@ public class IA_Ally_Guard : IA_Ally
         if (sStats.fAttackCooldown >= sStats.fAttackSpeed)
         {
             sStats.fAttackCooldown = 0f;
+
             P_BaseProjectile _baseProjectile = Instantiate(sStats.baseProjectilePrefab, transform.position, Quaternion.identity);
-            //_baseProjectile.SetProjectileData(fightingEnemy, );
+            _baseProjectile.SetProjectileData(fightingEnemy, sStats.fProjectileSpeed, sStats.eAttackType, sStats.fAttackDamage);
+
+            Vector3 _enemyPosition = fightingEnemy.transform.position;
+            if (Vector3.Distance(transform.position, _enemyPosition) > sStats.fAttackDistanceMaxRange)
+            {
+                //Enemy too far from guard
+                if (Vector3.Distance(fRallyPointEnemyPosition, _enemyPosition) > fRallyPointEnemyRange)
+                {
+                    FinishAttackDistance(fightingEnemy);
+                }
+                else
+                {
+                    //Move toward enemy
+                    OnTickIA = null;
+                    OnTickIA += MoveTowardEnemyWithRange;
+                    fightingEnemy.OnDestroyIA += StopMoveTowardEnemyWithRange;
+                }
+            }
         }
+    }
+    protected void FinishAttackDistance(IA_Base _enemy)
+    {
+        OnTickIA = null;
+        fightingEnemy.OnDestroyIA -= FinishAttackDistance;
+        fightingEnemy.OnDestroyIA -= StopMoveTowardEnemyWithRange;
+        fightingEnemy = null;
+        eState = EIA_State.Stand;
+        sStats.fAttackCooldown = 0f;
+
+        if (!bIsIADestroyed)
+            Invoke(nameof(StartChecking), 0.1f);
+    }
+    protected void StopMoveTowardEnemyWithRange(IA_Base _enemy)
+    {
+        OnTickIA = null;
+        fightingEnemy.OnDestroyIA -= StopMoveTowardEnemyWithRange;
+        fightingEnemy.OnDestroyIA -= FinishAttackDistance;
+        fightingEnemy = null;
+        eState = EIA_State.Stand;
+
+        if (!bIsIADestroyed)
+            Invoke(nameof(StartChecking), 0.1f);
     }
 
     public void ForceMoveToCheckPoint(Vector3 _position)

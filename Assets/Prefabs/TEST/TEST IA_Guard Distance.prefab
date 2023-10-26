@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4413041316532419922}
   - component: {fileID: 1310643167372910476}
   m_Layer: 7
-  m_Name: TEST IA_Guard
+  m_Name: TEST IA_Guard Distance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57,10 +57,10 @@ MonoBehaviour:
     fAttackDamage: 50
     fAttackSpeed: 1
     fAttackCooldown: 0
-    fAttackDistanceMaxRange: 1
-    fAttackDistanceMinRange: 1.5
+    fAttackDistanceMaxRange: 1.25
+    fAttackDistanceMinRange: 0.5
     baseProjectilePrefab: {fileID: 3168212340207210418, guid: b2d74234d3f528f44959aec2b5fd52cc, type: 3}
-    fProjectileSpeed: 1.5
+    fProjectileSpeed: 2.5
     ePhysicResistance: 0
     eMagicResistance: 0
   sMovementData:
@@ -71,13 +71,15 @@ MonoBehaviour:
     vGoalPosition: {x: 0, y: 0, z: 0}
   eState: 0
   eIAType: 0
-  eIAAttackStyle: 0
+  eIAAttackStyle: 2
   sEnemyDetectionData:
     fCheckInterval: 0.25
     fCheckRange: 1.5
   circleCollider: {fileID: 1724552590260725842}
   allEnemyInRange: []
   fightingEnemy: {fileID: 0}
+  bDrawDebug: 1
+  bDrawDistanceDebug: 1
   fCheckCurrentTime: 0
   fCheckMaxTime: 0.1
   vRallyPosition: {x: 0, y: 0, z: 0}
@@ -185,7 +187,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  m_Color: {r: 1, g: 0.93712294, b: 0, a: 1}
+  m_Color: {r: 1, g: 0.5641353, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
